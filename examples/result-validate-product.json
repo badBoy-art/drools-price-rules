@@ -1,0 +1,21 @@
+{
+  "productId" : "SKU-001",
+  "businessType" : "SALES_PRICE",
+  "grossMarginPct" : 1E+1,
+  "costIncreasePct" : null,
+  "evaluation" : {
+    "executionId" : "a4ca6eb7-9c13-4d1e-a1a6-78f2979517b7",
+    "rule_name" : "sales_price",
+    "version" : 5,
+    "policyId" : "custom1",
+    "policyName" : "自定义规则1",
+    "plan" : {
+      "decision" : "AUTO_APPROVE",
+      "approvalSteps" : [ ],
+      "ccAfterApproval" : [ ],
+      "matchedRules" : [ "sales_price:custom1:band3" ]
+    },
+    "results" : { },
+    "reasons" : [ ]
+  }
+}

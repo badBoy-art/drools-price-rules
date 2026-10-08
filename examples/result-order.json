@@ -1,0 +1,28 @@
+{
+  "executionId" : "92e61e93-1202-4e3f-91d3-afed27981381",
+  "rule_name" : "order_approval",
+  "version" : 3,
+  "policyId" : null,
+  "policyName" : null,
+  "plan" : {
+    "decision" : "MANUAL_APPROVAL",
+    "approvalSteps" : [ {
+      "order" : 1,
+      "mode" : "SERIAL",
+      "approvers" : [ "ROLE:SALES_MANAGER" ],
+      "sourceRule" : "order_approval:large_order"
+    }, {
+      "order" : 2,
+      "mode" : "PARALLEL",
+      "approvers" : [ "ROLE:FINANCE", "ROLE:RISK" ],
+      "sourceRule" : "order_approval:high_risk"
+    } ],
+    "ccAfterApproval" : [ "ROLE:BUSINESS_LEADER" ],
+    "matchedRules" : [ "order_approval:large_order", "order_approval:high_risk", "order_approval:vip_discount" ]
+  },
+  "results" : {
+    "discountRate" : 0.95
+  },
+  "reasons" : [ ],
+  "calculations" : { }
+}

@@ -1,0 +1,11 @@
+server:
+  address: 127.0.0.1
+  port: 8080
+spring:
+  datasource:
+    url: ${RULES_DB_URL:jdbc:mysql://localhost:3306/rule_engine?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai}
+    username: ${RULES_DB_USERNAME:root}
+    password: ${RULES_DB_PASSWORD:}
+  sql:
+    init:
+      mode: never

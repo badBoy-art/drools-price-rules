@@ -1,0 +1,13 @@
+{
+  "rule_name": "order_approval",
+  "document": {
+    "id": "ORDER-001",
+    "data": {
+      "orderAmount": 15000,
+      "customerLevel": "VIP",
+      "overdue": false,
+      "tags": ["CROSS_BORDER"],
+      "region": "CN"
+    }
+  }
+}

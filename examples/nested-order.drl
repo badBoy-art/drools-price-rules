@@ -1,0 +1,22 @@
+package example.generated
+
+import example.rules.GenericFact;
+global example.rules.GenericRuleResult result;
+dialect "java"
+
+rule "nested_order_approval:local_customer"
+when
+    $fact : GenericFact(businessType == "ORDER")
+    eval($fact.test("customer.address.province", "EQ", "\"浙江\""))
+then
+    result.match("nested_order_approval:local_customer", "BASE", 0, 0, "[{\"type\":\"REQUIRE_APPROVAL\",\"mode\":\"SERIAL\",\"targets\":[\"ROLE:SALES_MANAGER\"]},{\"type\":\"SET_RESULT\",\"key\":\"reviewRegion\",\"value\":\"LOCAL\"}]");
+end
+
+rule "nested_order_approval:other_customer"
+when
+    $fact : GenericFact(businessType == "ORDER")
+    eval($fact.test("customer.address.province", "NE", "\"浙江\""))
+then
+    result.match("nested_order_approval:other_customer", "BASE", 0, 1, "[{\"type\":\"AUTO_APPROVE\"},{\"type\":\"SET_RESULT\",\"key\":\"reviewRegion\",\"value\":\"REMOTE\"}]");
+end
+

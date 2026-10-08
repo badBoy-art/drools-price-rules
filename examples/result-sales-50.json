@@ -1,0 +1,25 @@
+{
+  "rule_name" : "sales_price",
+  "policyId" : "default",
+  "plan" : {
+    "decision" : "MANUAL_APPROVAL",
+    "approvalSteps" : [ {
+      "order" : 1,
+      "mode" : "SERIAL",
+      "approvers" : [ "ROLE:PURCHASE_PLUS_1" ],
+      "sourceRule" : "sales_price:default:band4"
+    }, {
+      "order" : 2,
+      "mode" : "SERIAL",
+      "approvers" : [ "USER:DEMO_APPROVER" ],
+      "sourceRule" : "sales_price:default:band4"
+    }, {
+      "order" : 3,
+      "mode" : "SERIAL",
+      "approvers" : [ "ROLE:PURCHASE_PLUS_2" ],
+      "sourceRule" : "sales_price:default:risk2"
+    } ],
+    "ccAfterApproval" : [ "ROLE:RISK_CONTROL", "ROLE:BUSINESS_LEADER" ],
+    "matchedRules" : [ "sales_price:default:band4", "sales_price:default:risk2" ]
+  }
+}

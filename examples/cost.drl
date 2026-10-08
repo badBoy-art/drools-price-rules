@@ -1,0 +1,22 @@
+package example.generated
+
+import example.rules.GenericFact;
+global example.rules.GenericRuleResult result;
+dialect "java"
+
+rule "cost_price:default:band1"
+when
+    $fact : GenericFact(businessType == "COST_PRICE")
+    eval(($fact.test("policyId", "EQ", "\"default\"")) && ($fact.test("costIncreasePct", "GE", "5")))
+then
+    result.match("cost_price:default:band1", "BASE", 0, 0, "[{\"type\":\"REQUIRE_APPROVAL\",\"mode\":\"SERIAL\",\"targets\":[\"ROLE:PURCHASE_PLUS_1\",\"ROLE:PURCHASE_PLUS_2\"]}]");
+end
+
+rule "cost_price:default:risk1"
+when
+    $fact : GenericFact(businessType == "COST_PRICE")
+    eval(($fact.test("policyId", "EQ", "\"default\"")) && ($fact.test("costIncreasePct", "GE", "5E+1")))
+then
+    result.match("cost_price:default:risk1", "SUPPLEMENT", 0, 1, "[{\"type\":\"CC_AFTER_APPROVAL\",\"targets\":[\"ROLE:RISK_CONTROL\",\"ROLE:BUSINESS_LEADER\"]}]");
+end
+

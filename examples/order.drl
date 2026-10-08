@@ -1,0 +1,46 @@
+package example.generated
+
+import example.rules.GenericFact;
+global example.rules.GenericRuleResult result;
+dialect "java"
+
+rule "order_approval:small_order"
+when
+    $fact : GenericFact(businessType == "ORDER")
+    eval($fact.test("orderAmount", "LE", "10000"))
+then
+    result.match("order_approval:small_order", "BASE", 0, 0, "[{\"type\":\"AUTO_APPROVE\"}]");
+end
+
+rule "order_approval:large_order"
+when
+    $fact : GenericFact(businessType == "ORDER")
+    eval($fact.test("orderAmount", "GT", "10000"))
+then
+    result.match("order_approval:large_order", "BASE", 0, 1, "[{\"type\":\"REQUIRE_APPROVAL\",\"mode\":\"SERIAL\",\"targets\":[\"ROLE:SALES_MANAGER\"]}]");
+end
+
+rule "order_approval:vip_discount"
+when
+    $fact : GenericFact(businessType == "ORDER")
+    eval(($fact.test("customerLevel", "IN", "[\"VIP\",\"SVIP\"]")) && (!($fact.test("overdue", "EQ", "true"))))
+then
+    result.match("order_approval:vip_discount", "SUPPLEMENT", 10, 2, "[{\"type\":\"SET_RESULT\",\"key\":\"discountRate\",\"value\":0.95}]");
+end
+
+rule "order_approval:high_risk"
+when
+    $fact : GenericFact(businessType == "ORDER")
+    eval(($fact.test("orderAmount", "GE", "50000")) || ($fact.test("tags", "CONTAINS_ANY", "[\"HIGH_RISK\",\"CROSS_BORDER\"]")))
+then
+    result.match("order_approval:high_risk", "SUPPLEMENT", 20, 3, "[{\"type\":\"APPEND_APPROVAL\",\"mode\":\"PARALLEL\",\"targets\":[\"ROLE:FINANCE\",\"ROLE:RISK\"]},{\"type\":\"CC_AFTER_APPROVAL\",\"targets\":[\"ROLE:BUSINESS_LEADER\"]}]");
+end
+
+rule "order_approval:overdue_reject"
+when
+    $fact : GenericFact(businessType == "ORDER")
+    eval($fact.test("overdue", "EQ", "true"))
+then
+    result.match("order_approval:overdue_reject", "SUPPLEMENT", 100, 4, "[{\"type\":\"REJECT\",\"reason\":\"客户存在逾期账款\"}]");
+end
+

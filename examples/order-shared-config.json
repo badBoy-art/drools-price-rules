@@ -1,0 +1,150 @@
+{
+  "ruleName": "order_shared_approval",
+  "businessType": "ORDER",
+  "parameterSources": [
+    {
+      "ruleName": "order_approval",
+      "inputs": [
+        "orderAmount",
+        "customerLevel",
+        "overdue",
+        "tags",
+        "region"
+      ],
+      "outputs": [
+        "discountRate"
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "id": "small_order",
+      "name": "小额订单",
+      "kind": "BASE",
+      "priority": 0,
+      "when": {
+        "field": "orderAmount",
+        "operator": "LE",
+        "value": 10000
+      },
+      "actions": [
+        {
+          "type": "AUTO_APPROVE"
+        }
+      ]
+    },
+    {
+      "id": "large_order",
+      "name": "大额订单",
+      "kind": "BASE",
+      "priority": 0,
+      "when": {
+        "field": "orderAmount",
+        "operator": "GT",
+        "value": 10000
+      },
+      "actions": [
+        {
+          "type": "REQUIRE_APPROVAL",
+          "mode": "SERIAL",
+          "targets": [
+            "ROLE:SALES_MANAGER"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vip_discount",
+      "name": "会员折扣",
+      "kind": "SUPPLEMENT",
+      "priority": 10,
+      "when": {
+        "logic": "ALL",
+        "conditions": [
+          {
+            "field": "customerLevel",
+            "operator": "IN",
+            "value": [
+              "VIP",
+              "SVIP"
+            ]
+          },
+          {
+            "logic": "NOT",
+            "conditions": [
+              {
+                "field": "overdue",
+                "operator": "EQ",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "actions": [
+        {
+          "type": "SET_RESULT",
+          "key": "discountRate",
+          "value": 0.95
+        }
+      ]
+    },
+    {
+      "id": "high_risk",
+      "name": "高风险追加审批",
+      "kind": "SUPPLEMENT",
+      "priority": 20,
+      "when": {
+        "logic": "ANY",
+        "conditions": [
+          {
+            "field": "orderAmount",
+            "operator": "GE",
+            "value": 50000
+          },
+          {
+            "field": "tags",
+            "operator": "CONTAINS_ANY",
+            "value": [
+              "HIGH_RISK",
+              "CROSS_BORDER"
+            ]
+          }
+        ]
+      },
+      "actions": [
+        {
+          "type": "APPEND_APPROVAL",
+          "mode": "PARALLEL",
+          "targets": [
+            "ROLE:FINANCE",
+            "ROLE:RISK"
+          ]
+        },
+        {
+          "type": "CC_AFTER_APPROVAL",
+          "targets": [
+            "ROLE:BUSINESS_LEADER"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "overdue_reject",
+      "name": "逾期拒绝",
+      "kind": "SUPPLEMENT",
+      "priority": 100,
+      "when": {
+        "field": "overdue",
+        "operator": "EQ",
+        "value": true
+      },
+      "actions": [
+        {
+          "type": "REJECT",
+          "reason": "客户存在逾期账款"
+        }
+      ]
+    }
+  ]
+}

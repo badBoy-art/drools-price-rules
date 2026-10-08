@@ -1,0 +1,12 @@
+{
+  "rule_name": "cost_price",
+  "document": {
+    "id": "COST-CHANGE-001",
+    "categoryPath": [],
+    "data": {
+      "productId": "SKU-001",
+      "originalCostPrice": 100,
+      "newCostPrice": 105
+    }
+  }
+}

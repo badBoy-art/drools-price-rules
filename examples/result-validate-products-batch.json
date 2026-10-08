@@ -1,0 +1,85 @@
+{
+  "documentId" : "SO-1002",
+  "rule_name" : "sales_price",
+  "version" : 4,
+  "total" : 3,
+  "successCount" : 2,
+  "errorCount" : 1,
+  "items" : [ {
+    "index" : 1,
+    "productId" : "SKU-001",
+    "status" : "SUCCESS",
+    "result" : {
+      "productId" : "SKU-001",
+      "businessType" : "SALES_PRICE",
+      "grossMarginPct" : 1E+1,
+      "costIncreasePct" : null,
+      "evaluation" : {
+        "executionId" : "19dbe51a-459e-4d06-b025-954c2a9a6080",
+        "rule_name" : "sales_price",
+        "version" : 4,
+        "policyId" : "custom1",
+        "policyName" : "自定义规则1",
+        "plan" : {
+          "decision" : "AUTO_APPROVE",
+          "approvalSteps" : [ ],
+          "ccAfterApproval" : [ ],
+          "matchedRules" : [ "sales_price:custom1:band3" ]
+        },
+        "results" : { },
+        "reasons" : [ ]
+      }
+    },
+    "error" : null
+  }, {
+    "index" : 2,
+    "productId" : "SKU-003",
+    "status" : "INVALID_INPUT",
+    "result" : null,
+    "error" : {
+      "code" : "INVALID_PRODUCT",
+      "message" : "salePrice必须大于0"
+    }
+  }, {
+    "index" : 3,
+    "productId" : "SKU-002",
+    "status" : "SUCCESS",
+    "result" : {
+      "productId" : "SKU-002",
+      "businessType" : "SALES_PRICE",
+      "grossMarginPct" : 5E+1,
+      "costIncreasePct" : null,
+      "evaluation" : {
+        "executionId" : "b642f048-e824-4249-ba5e-82a20c9b80ad",
+        "rule_name" : "sales_price",
+        "version" : 4,
+        "policyId" : "default",
+        "policyName" : "默认规则",
+        "plan" : {
+          "decision" : "MANUAL_APPROVAL",
+          "approvalSteps" : [ {
+            "order" : 1,
+            "mode" : "SERIAL",
+            "approvers" : [ "ROLE:PURCHASE_PLUS_1" ],
+            "sourceRule" : "sales_price:default:band4"
+          }, {
+            "order" : 2,
+            "mode" : "SERIAL",
+            "approvers" : [ "USER:DEMO_APPROVER" ],
+            "sourceRule" : "sales_price:default:band4"
+          }, {
+            "order" : 3,
+            "mode" : "SERIAL",
+            "approvers" : [ "ROLE:PURCHASE_PLUS_2" ],
+            "sourceRule" : "sales_price:default:risk2"
+          } ],
+          "ccAfterApproval" : [ "ROLE:RISK_CONTROL", "ROLE:BUSINESS_LEADER" ],
+          "matchedRules" : [ "sales_price:default:band4", "sales_price:default:risk2" ]
+        },
+        "results" : { },
+        "reasons" : [ ]
+      }
+    },
+    "error" : null
+  } ]
+}

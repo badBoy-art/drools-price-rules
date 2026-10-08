@@ -1,0 +1,46 @@
+{
+  "ruleName": "cost_price",
+  "businessType": "COST_PRICE",
+  "policies": [
+    {
+      "id": "default",
+      "name": "成本价审核规则",
+      "defaultPolicy": true,
+      "categoryIds": [],
+      "bands": [
+        {
+          "id": "band1",
+          "min": 5,
+          "minInclusive": true,
+          "max": null,
+          "maxInclusive": true,
+          "autoApprove": false,
+          "mode": "SERIAL",
+          "approvers": [
+            "ROLE:PURCHASE_PLUS_1",
+            "ROLE:PURCHASE_PLUS_2"
+          ]
+        }
+      ],
+      "risks": [
+        {
+          "id": "risk1",
+          "operator": "GE",
+          "threshold": 50,
+          "mode": "SERIAL",
+          "additionalApprovers": [],
+          "ccAfterApproval": [
+            "ROLE:RISK_CONTROL",
+            "ROLE:BUSINESS_LEADER"
+          ]
+        }
+      ]
+    }
+  ],
+  "calculation": {
+    "type": "COST_INCREASE",
+    "baseField": "originalCostPrice",
+    "compareField": "newCostPrice",
+    "resultField": "costIncreasePct"
+  }
+}
