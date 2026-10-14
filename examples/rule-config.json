@@ -1,0 +1,162 @@
+{
+  "businessCode": "product_price_audit",
+  "businessName": "商品价格规则",
+  "conditions": [
+    {
+      "ruleCode": "default",
+      "ruleName": "默认销售规则",
+      "isDefault": true,
+      "ruleOrder": 0,
+      "conditionCode": "band1",
+      "conditionType": "CATEGORY_INTERVAL",
+      "field": "pricing.metrics.grossProfitRate",
+      "predicateType": "INTERVAL",
+      "upperBound": 0,
+      "upperInclusive": true,
+      "conditionOrder": 0,
+      "resultAssignments": [
+        {
+          "field": "decision.sales",
+          "value": "REVIEW_LEVEL_2"
+        }
+      ]
+    },
+    {
+      "ruleCode": "default",
+      "ruleName": "默认销售规则",
+      "isDefault": true,
+      "ruleOrder": 0,
+      "conditionCode": "band2",
+      "conditionType": "CATEGORY_INTERVAL",
+      "field": "pricing.metrics.grossProfitRate",
+      "predicateType": "INTERVAL",
+      "lowerBound": 0,
+      "upperBound": 5,
+      "upperInclusive": true,
+      "conditionOrder": 1,
+      "resultAssignments": [
+        {
+          "field": "decision.sales",
+          "value": "REVIEW_LEVEL_1"
+        }
+      ]
+    },
+    {
+      "ruleCode": "default",
+      "ruleName": "默认销售规则",
+      "isDefault": true,
+      "ruleOrder": 0,
+      "conditionCode": "band3",
+      "conditionType": "CATEGORY_INTERVAL",
+      "field": "pricing.metrics.grossProfitRate",
+      "predicateType": "INTERVAL",
+      "lowerBound": 5,
+      "upperBound": 10,
+      "upperInclusive": true,
+      "conditionOrder": 2,
+      "resultAssignments": [
+        {
+          "field": "decision.sales",
+          "value": "AUTO_PASS"
+        },
+        {
+          "field": "decision.sales",
+          "value": "COST_INCREASE_REVIEW",
+          "when": "COST_INCREASE"
+        }
+      ]
+    },
+    {
+      "ruleCode": "default",
+      "ruleName": "默认销售规则",
+      "isDefault": true,
+      "ruleOrder": 0,
+      "conditionCode": "band4",
+      "conditionType": "CATEGORY_INTERVAL",
+      "field": "pricing.metrics.grossProfitRate",
+      "predicateType": "INTERVAL",
+      "lowerBound": 10,
+      "conditionOrder": 3,
+      "resultAssignments": [
+        {
+          "field": "decision.sales",
+          "value": "REVIEW_LEVEL_1"
+        }
+      ]
+    },
+    {
+      "ruleCode": "default",
+      "ruleName": "默认销售规则",
+      "isDefault": true,
+      "ruleOrder": 0,
+      "conditionCode": "risk1",
+      "conditionType": "CATEGORY_RISK",
+      "field": "pricing.metrics.grossProfitRate",
+      "predicateType": "THRESHOLD",
+      "comparison": "LE",
+      "thresholdValue": -50,
+      "conditionOrder": 0,
+      "resultAssignments": [
+        {
+          "field": "decision.sales",
+          "value": "RISK_LOW"
+        }
+      ]
+    },
+    {
+      "ruleCode": "risk_by_category",
+      "ruleName": "指定品类风控",
+      "ruleOrder": 1,
+      "conditionCode": "risk1",
+      "conditionType": "CATEGORY_RISK",
+      "field": "pricing.metrics.grossProfitRate",
+      "predicateType": "THRESHOLD",
+      "comparison": "GE",
+      "thresholdValue": 50,
+      "conditionOrder": 0,
+      "categoryId1": "CAT_1",
+      "resultAssignments": [
+        {
+          "field": "decision.risk",
+          "value": "CATEGORY_RISK_HIGH"
+        }
+      ]
+    },
+    {
+      "ruleCode": "cost",
+      "ruleName": "成本上调幅度审核规则",
+      "ruleOrder": 2,
+      "conditionCode": "increase5",
+      "conditionType": "COST_INCREASE",
+      "field": "pricing.costIncreaseRate",
+      "predicateType": "THRESHOLD",
+      "comparison": "GE",
+      "thresholdValue": 5,
+      "conditionOrder": 0,
+      "resultAssignments": [
+        {
+          "field": "decision.cost",
+          "value": "COST_INCREASE_5"
+        }
+      ]
+    },
+    {
+      "ruleCode": "cost",
+      "ruleName": "成本上调幅度审核规则",
+      "ruleOrder": 2,
+      "conditionCode": "increase50",
+      "conditionType": "COST_INCREASE",
+      "field": "pricing.costIncreaseRate",
+      "predicateType": "THRESHOLD",
+      "comparison": "GE",
+      "thresholdValue": 50,
+      "conditionOrder": 1,
+      "resultAssignments": [
+        {
+          "field": "decision.cost",
+          "value": "COST_INCREASE_50"
+        }
+      ]
+    }
+  ]
+}

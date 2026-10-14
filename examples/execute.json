@@ -1,0 +1,12 @@
+{
+  "business_code": "product_price_audit",
+  "params": {
+    "pricing": {
+      "metrics": {
+        "grossProfitRate": 55
+      },
+      "costIncreaseRate": 50
+    },
+    "categoryId1": "CAT_1"
+  }
+}
