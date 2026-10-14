@@ -1,12 +1,43 @@
--- 每个rule_name的最大version为当前生效版本，历史版本继续保留。
-CREATE TABLE rule_version (
-  rule_name    VARCHAR(64) NOT NULL COMMENT '规则集标识',
-  version      BIGINT NOT NULL COMMENT '规则版本号，同一规则集从1开始递增',
-  config_json  LONGTEXT NOT NULL COMMENT '规则及完整入出参数定义、共用参数来源版本的JSON快照',
-  drl_content  LONGTEXT NOT NULL COMMENT '编译校验通过的DRL快照',
-  creator_id   VARCHAR(36) DEFAULT '' NOT NULL COMMENT '创建人id',
-  created_date DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',
-  updater_id   VARCHAR(36) DEFAULT '' NOT NULL COMMENT '最后更新人id',
-  updated_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL COMMENT '最后更新时间',
-  PRIMARY KEY (rule_name, version)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='规则配置及历史版本';
+CREATE TABLE `ac_audit_rule` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `rule_code` varchar(36) NOT NULL COMMENT '规则编码',
+  `rule_name` varchar(50) NOT NULL COMMENT '规则名称',
+  `creator_id` varchar(36) NOT NULL DEFAULT '' COMMENT '创建人id',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `last_updater_id` varchar(36) NOT NULL DEFAULT '' COMMENT '最后更新人id',
+  `last_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+  `del_flag` tinyint(4) NOT NULL DEFAULT '0' COMMENT '删除标志[0-否,1-是]',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_rule_code` (`rule_code`)
+ ) ENGINE=InnoDB COMMENT='审核规则';
+
+CREATE TABLE `ac_audit_rule_cond` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `rule_id` bigint(20) NOT NULL COMMENT '规则ID',
+  `rule_name` varchar(50) NOT NULL COMMENT '规则名称',
+  `is_def` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否默认[0-否,1-是]',
+  `category_id1` bigint(20) NOT NULL DEFAULT '0' COMMENT '1级品类ID',
+  `category_id2` bigint(20) NOT NULL DEFAULT '0' COMMENT '2级品类ID',
+  `category_id3` bigint(20) NOT NULL DEFAULT '0' COMMENT '3级品类ID',
+  `rule_sort_no` int(11) NOT NULL COMMENT '规则排序号',
+  `cond_code` varchar(32) NOT NULL COMMENT '条件编码',
+  `cond_type_name` varchar(20) NOT NULL COMMENT '条件类型名称[CATEGORY_INTERVAL-品类与毛利区间,CATEGORY_RISK-品类与毛利风控,COST_INCREASE-成本上调规则]',
+  `value_field_name` varchar(30) NOT NULL COMMENT '取值字段名称',
+  `judge_type_name` varchar(16) NOT NULL COMMENT '判断类型名称',
+  `lowbound_val` decimal(20,8) DEFAULT NULL COMMENT '下界值',
+  `is_inc_lowbound` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否包含下界[0-否,1-是]',
+  `upbound_val` decimal(20,8) DEFAULT NULL COMMENT '上界值',
+  `is_inc_upbound` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否包含上界[0-否,1-是]',
+  `cmpr_type` varchar(2) DEFAULT NULL COMMENT '比较类型[LT,LE,EQ,GE,GT]',
+  `thres` decimal(20,8) DEFAULT NULL COMMENT '阈值',
+  `rslt_assign_info` json NOT NULL COMMENT '结果分配信息(json)',
+  `script_cont` text NOT NULL COMMENT '脚本内容',
+  `cond_sort_no` int(11) NOT NULL COMMENT '条件排序号',
+  `creator_id` varchar(36) NOT NULL DEFAULT '' COMMENT '创建人id',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `last_updater_id` varchar(36) NOT NULL DEFAULT '' COMMENT '最后更新人id',
+  `last_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+  `del_flag` tinyint(4) NOT NULL DEFAULT '0' COMMENT '删除标志[0-否,1-是]',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_rule_id_cond_code` (`rule_id`,`cond_code`)
+ ) ENGINE=InnoDB COMMENT='审核规则条件';
